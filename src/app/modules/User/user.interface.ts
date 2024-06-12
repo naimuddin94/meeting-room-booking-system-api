@@ -8,7 +8,7 @@ export interface IUser
   lastPasswordChange: Date;
   isDeleted: boolean;
   status: 'active' | 'blocked';
-  refreshToken?: string;
+  refreshToken: string;
 }
 
 export interface IUserMethods {

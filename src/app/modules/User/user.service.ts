@@ -53,9 +53,22 @@ const loginUser = async (payload: ILoginPayload) => {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Invalid credentials');
   }
 
-  
+  const token = user.generateAccessToken();
+  const refreshToken = user.generateRefreshToken();
 
-  return user;
+  user.refreshToken = refreshToken;
+  await user.save();
+
+  const data = omitField(user.toObject(), [
+    'password',
+    'createdAt',
+    'updatedAt',
+    'refreshToken',
+    'status',
+    'isDeleted',
+  ]);
+
+  return { token, refreshToken, data };
 };
 
 export const UserService = {
