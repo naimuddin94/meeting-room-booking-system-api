@@ -1,14 +1,14 @@
 class ApiResponse<T> {
-  public status: number;
+  public statusCode: number;
   public data: T;
   public message: string;
   public success: boolean;
 
-  constructor(status: number, data: T, message: string) {
-    this.status = status;
+  constructor(statusCode: number, data: T, message: string) {
+    this.statusCode = statusCode;
     this.data = data;
     this.message = message;
-    this.success = status < 400;
+    this.success = statusCode < 400;
   }
 }
 

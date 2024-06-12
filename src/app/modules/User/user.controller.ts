@@ -7,7 +7,7 @@ const createUser = asyncHandler(async (req, res) => {
 
   res
     .status(201)
-    .json(new ApiResponse(201, result, 'User created successfully'));
+    .json(new ApiResponse(201, result, 'User registered successfully'));
 });
 
 export const UserController = {
