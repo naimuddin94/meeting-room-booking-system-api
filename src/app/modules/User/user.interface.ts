@@ -4,7 +4,12 @@ import { z } from 'zod';
 import { UserValidation } from './user.validation';
 
 export interface IUser
-  extends z.infer<typeof UserValidation.userValidationSchema> {}
+  extends z.infer<typeof UserValidation.userValidationSchema> {
+  lastPasswordChange: Date;
+  isDeleted: boolean;
+  status: 'active' | 'blocked';
+  refreshToken?: string;
+}
 
 export interface IUserMethods {
   isPasswordCorrect(password: string): Promise<boolean>;
@@ -15,4 +20,9 @@ export interface IUserMethods {
 export interface IUserModel
   extends Model<IUser, Record<string, never>, IUserMethods> {
   isUserExists(email: string): Promise<HydratedDocument<IUser, IUserMethods>>;
+}
+
+export interface ILoginPayload {
+  email: string;
+  password: string;
 }

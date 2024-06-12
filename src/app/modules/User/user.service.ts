@@ -3,7 +3,7 @@
 import httpStatus from 'http-status';
 import { omitField } from '../../lib/omitField';
 import { ApiError } from '../../utils';
-import { IUser } from './user.interface';
+import { ILoginPayload, IUser } from './user.interface';
 import User from './user.model';
 
 const saveUserIntoDB = async (payload: IUser) => {
@@ -32,6 +32,33 @@ const saveUserIntoDB = async (payload: IUser) => {
   return userResponse;
 };
 
+const loginUser = async (payload: ILoginPayload) => {
+  const user = await User.isUserExists(payload.email);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
+  }
+
+  if (user.isDeleted) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User is deleted');
+  }
+
+  if (user.status === 'blocked') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User is blocked');
+  }
+
+  const isPasswordCorrect = await user.isPasswordCorrect(payload.password);
+
+  if (!isPasswordCorrect) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Invalid credentials');
+  }
+
+  
+
+  return user;
+};
+
 export const UserService = {
   saveUserIntoDB,
+  loginUser,
 };

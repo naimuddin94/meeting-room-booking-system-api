@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { role, status } from './user.constant';
+import { role } from './user.constant';
 
 const userValidationSchema = z.object({
   name: z
@@ -29,17 +29,22 @@ const userValidationSchema = z.object({
   role: z.enum([...role] as [string], {
     message: 'Role is required in valid format user or admin',
   }),
-  refreshToken: z.string({}).optional(),
-  status: z
-    .enum([...status] as [string], {
-      message: 'Status is required in valid format active or blocked',
-    })
-    .optional(),
-  isDeleted: z
-    .boolean({
-      invalid_type_error: 'Deleted status must be boolean',
-    })
-    .default(false),
+});
+
+const loginUserValidationSchema = z.object({
+  body: z.object({
+    email: z
+      .string({
+        required_error: 'Email is required',
+      })
+      .email({ message: 'Invalid email format' }),
+    password: z
+      .string({
+        required_error: 'Password is required',
+      })
+      .min(4, { message: 'Password must be at least 4 characters' })
+      .max(20, { message: 'Password no longer that 20 characters' }),
+  }),
 });
 
 const createUserValidationSchema = z.object({
@@ -54,4 +59,5 @@ export const UserValidation = {
   userValidationSchema,
   createUserValidationSchema,
   updateUserValidationSchema,
+  loginUserValidationSchema,
 };

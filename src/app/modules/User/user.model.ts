@@ -41,6 +41,13 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
     refreshToken: {
       type: String,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    lastPasswordChange: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
