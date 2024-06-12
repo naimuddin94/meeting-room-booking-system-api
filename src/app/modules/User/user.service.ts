@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import httpStatus from 'http-status';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import config from '../../config';
 import { omitField } from '../../lib/omitField';
 import { ApiError } from '../../utils';
 import { ILoginPayload, IUser } from './user.interface';
@@ -71,7 +73,37 @@ const loginUser = async (payload: ILoginPayload) => {
   return { token, refreshToken, data };
 };
 
+const logoutUser = async (refreshToken: string) => {
+  // checking if the token is missing
+  if (!refreshToken) {
+    throw new ApiError(
+      httpStatus.SERVICE_UNAVAILABLE,
+      'You already have no credentials!',
+    );
+  }
+
+  // checking if the given token is valid
+  const decoded = jwt.verify(
+    refreshToken,
+    config.refresh_token_secret!,
+  ) as JwtPayload;
+
+  const { id } = decoded;
+
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
+  }
+
+  user.refreshToken = '';
+  await user.save();
+
+  return null;
+};
+
 export const UserService = {
   saveUserIntoDB,
   loginUser,
+  logoutUser,
 };

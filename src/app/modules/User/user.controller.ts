@@ -21,7 +21,19 @@ const login = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, data, 'User logged in successfully', token));
 });
 
+const logout = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken;
+
+  await UserService.logoutUser(refreshToken);
+
+  res
+    .status(200)
+    .clearCookie('refreshToken')
+    .json(new ApiResponse(200, null, 'Logout successfully'));
+});
+
 export const UserController = {
   createUser,
   login,
+  logout,
 };

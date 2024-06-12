@@ -45,7 +45,7 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
       type: Boolean,
       default: false,
     },
-    lastPasswordChange: {
+    passwordChangedAt: {
       type: Date,
     },
   },
@@ -90,7 +90,7 @@ userSchema.methods.isPasswordCorrect = async function (password: string) {
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
-      _id: this._id,
+      id: this._id,
       email: this.email,
       role: this.role,
     },
@@ -105,13 +105,23 @@ userSchema.methods.generateAccessToken = function () {
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
-      id: this.id,
+      id: this._id,
     },
     config.refresh_token_secret!,
     {
       expiresIn: config.refresh_token_expiry,
     },
   );
+};
+
+// compare last password change time with jwt time
+userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+  passwordChangedTimestamp: Date,
+  jwtIssuedTimestamp: number,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimestamp).getTime() / 1000;
+  return passwordChangedTime > jwtIssuedTimestamp;
 };
 
 const User = model<IUser, IUserModel>('User', userSchema);

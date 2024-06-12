@@ -11,11 +11,14 @@ router
     validateRequest(UserValidation.createUserValidationSchema),
     UserController.createUser,
   );
+
 router
   .route('/login')
   .post(
     validateRequest(UserValidation.loginUserValidationSchema),
     UserController.login,
   );
+
+router.route('/logout').post(UserController.logout);
 
 export const userRouter = router;

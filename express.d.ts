@@ -1,9 +1,9 @@
-// types/express.d.ts
-import { HydratedDocument } from 'mongoose';
-import { IUser, IUserMethods } from './src/app/modules/User/user.interface';
+import { JwtPayload } from 'jsonwebtoken';
 
-declare module 'express-serve-static-core' {
-  interface Request {
-    user?: HydratedDocument<IUser, IUserMethods>;
+declare global {
+  namespace Express {
+    interface Request {
+      user: JwtPayload;
+    }
   }
 }

@@ -5,7 +5,7 @@ import { UserValidation } from './user.validation';
 
 export interface IUser
   extends z.infer<typeof UserValidation.userValidationSchema> {
-  lastPasswordChange: Date;
+  passwordChangedAt: Date;
   isDeleted: boolean;
   status: 'active' | 'blocked';
   refreshToken: string;
@@ -20,9 +20,15 @@ export interface IUserMethods {
 export interface IUserModel
   extends Model<IUser, Record<string, never>, IUserMethods> {
   isUserExists(email: string): Promise<HydratedDocument<IUser, IUserMethods>>;
+  isJWTIssuedBeforePasswordChanged(
+    passwordChangedTimestamp: Date,
+    jwtIssuedTimestamp: number,
+  ): boolean;
 }
 
 export interface ILoginPayload {
   email: string;
   password: string;
 }
+
+export type TUserRole = 'user' | 'admin';
