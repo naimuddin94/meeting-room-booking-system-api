@@ -1,5 +1,5 @@
 import httpStatus from 'http-status';
-import { ApiError } from '../../../utils';
+import { ApiError } from '../../utils';
 import { IUser } from './user.interface';
 import User from './user.model';
 
