@@ -9,7 +9,8 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Application, NextFunction, Request, Response } from 'express';
-import globalErrorHandler from './lib/globalErrorHandler';
+import router from './app/routes';
+import { globalErrorHandler } from './app/utils';
 
 const app: Application = express();
 
@@ -29,6 +30,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Application routes
+app.use('/api', router);
 
 // Not-Found routes error handler
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
