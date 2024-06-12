@@ -36,6 +36,7 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
     status: {
       type: String,
       enum: status,
+      default: 'active',
     },
     refreshToken: {
       type: String,
