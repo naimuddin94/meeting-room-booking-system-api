@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Model } from 'mongoose';
 import { z } from 'zod';
 import { RoomValidation } from './room.validation';
