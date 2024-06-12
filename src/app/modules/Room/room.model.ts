@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { IRoom } from './room.interface';
+import { IRoom, IRoomModel } from './room.interface';
 
-const roomSchema = new Schema<IRoom>(
+const roomSchema = new Schema<IRoom, IRoomModel>(
   {
     name: {
       type: String,
@@ -44,6 +44,6 @@ const roomSchema = new Schema<IRoom>(
   },
 );
 
-const Room = model<IRoom>('User', roomSchema);
+const Room = model<IRoom, IRoomModel>('Room', roomSchema);
 
 export default Room;
