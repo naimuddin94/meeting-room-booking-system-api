@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import QueryBuilder from '../../builder/QueryBuilder';
 import { ApiError } from '../../utils';
 import Room from '../Room/room.model';
 import { ISlot } from './slot.interface';
@@ -66,6 +67,35 @@ const saveSlotIntoDB = async (payload: ISlot) => {
   return result;
 };
 
+const fetchAllAvailableSlotsFromDB = async (query: Record<string, unknown>) => {
+  if (query?.date) {
+    query.date = new Date(query.date as string);
+  }
+
+  if (query?.roomId) {
+    query.room = query.roomId as string;
+    delete query.roomId;
+  }
+
+  const slotQuery = new QueryBuilder(
+    Slot.find({ isBooked: false })
+      .populate({
+        path: 'room',
+        select: '-status -createdAt -updatedAt',
+      })
+      .select('-isDeleted'),
+    query,
+  )
+    .filter()
+    .fields()
+    .sort();
+
+  const result = await slotQuery.queryModel;
+
+  return result;
+};
+
 export const SlotService = {
   saveSlotIntoDB,
+  fetchAllAvailableSlotsFromDB,
 };
