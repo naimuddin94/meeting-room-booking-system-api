@@ -10,4 +10,8 @@ router
   .post(auth(USER_ROLE.user, USER_ROLE.admin), BookingController.createBooking)
   .get(auth(USER_ROLE.admin), BookingController.fetchAllBookings);
 
+router
+  .route('/:id')
+  .put(auth(USER_ROLE.admin), BookingController.updateBookingStatus);
+
 export const bookingRouter = router;

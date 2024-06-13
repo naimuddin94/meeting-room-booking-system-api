@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import { ApiError } from '../../utils';
@@ -6,7 +7,6 @@ import Slot from '../Slot/slot.model';
 import { IBooking } from './booking.interface';
 import Booking from './booking.model';
 
-// Function to save booking details into the database
 const saveBookingIntoDB = async (payload: IBooking) => {
   const { date, room, slots } = payload;
 
@@ -34,12 +34,20 @@ const saveBookingIntoDB = async (payload: IBooking) => {
   const targetDate = new Date(date).toISOString().split('T')[0];
 
   const allSlots = availableSlotsQueryDate.filter(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (slot: any) =>
       slots.includes(slot._id.toString()) &&
       slot.date.toISOString().split('T')[0] === targetDate &&
       !slot.isBooked,
   );
+
+  allSlots.forEach((slot: any) => {
+    if (slot.room.toString() !== room) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        'Room id is not matching in slots',
+      );
+    }
+  });
 
   if (allSlots.length !== slots.length) {
     throw new ApiError(
@@ -118,7 +126,42 @@ const fetchAllBookingsFromDB = async () => {
   return result;
 };
 
+const fetchAllOwenBookingsFromDB = async (id: string) => {
+  const result = await Booking.find({ user: id }).populate([
+    {
+      path: 'room',
+      select: '-status -createdAt -updatedAt',
+    },
+    {
+      path: 'slots',
+      select: '-isDeleted',
+    },
+    {
+      path: 'user',
+      select: '-status -createdAt -updatedAt -refreshToken -isDeleted',
+    },
+  ]);
+  return result;
+};
+
+const updateBookingStatusIntoDB = async (
+  id: string,
+  payload: Pick<IBooking, 'isConfirmed'>,
+) => {
+  const { isConfirmed } = payload;
+  const result = await Booking.findByIdAndUpdate(
+    id,
+    { isConfirmed },
+    {
+      new: true,
+    },
+  );
+  return result;
+};
+
 export const BookingService = {
   saveBookingIntoDB,
   fetchAllBookingsFromDB,
+  fetchAllOwenBookingsFromDB,
+  updateBookingStatusIntoDB,
 };
