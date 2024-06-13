@@ -54,11 +54,17 @@ const auth = (...requiredRoles: TUserRole[]) => {
           iat as number,
         )
       ) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access !');
+        throw new ApiError(
+          httpStatus.UNAUTHORIZED,
+          'You have no access to this route',
+        );
       }
 
       if (requiredRoles && !requiredRoles.includes(role)) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access !');
+        throw new ApiError(
+          httpStatus.UNAUTHORIZED,
+          'You have no access to this route',
+        );
       }
 
       req.user = decoded as JwtPayload;

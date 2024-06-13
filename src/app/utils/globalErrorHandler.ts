@@ -5,12 +5,12 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { ZodError } from 'zod';
-import { IErrorSource } from '../types';
-import ApiError from './ApiError';
 import { handleCastError } from '../error/handleCastError';
 import { handleDuplicateError } from '../error/handleDuplicateError';
 import { handleMongooseError } from '../error/handleMongooseError';
 import { handleZodError } from '../error/handleZodError';
+import { IErrorSource } from '../types';
+import ApiError from './ApiError';
 
 const globalErrorHandler = (
   err: any,
@@ -69,7 +69,8 @@ const globalErrorHandler = (
   return res.status(err.status || statusCode).json({
     success: false,
     message,
-    errors,
+    errorMessages: errors,
+    stack: err?.stack,
   });
 };
 
