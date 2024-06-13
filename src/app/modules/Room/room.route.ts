@@ -22,6 +22,7 @@ router
   .put(
     validateRequest(RoomValidation.updateRoomValidationSchema),
     RoomController.updateRoom,
-  );
+  )
+  .delete(auth(USER_ROLE.admin), RoomController.deleteRoom);
 
 export const roomRouter = router;

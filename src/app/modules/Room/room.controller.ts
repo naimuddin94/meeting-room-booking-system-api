@@ -49,9 +49,19 @@ const updateRoom = asyncHandler(async (req, res) => {
     .json(new ApiResponse(httpStatus.OK, result, 'Room updated successfully'));
 });
 
+const deleteRoom = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const result = await RoomService.deleteRoomFromDB(id);
+
+  res
+    .status(httpStatus.OK)
+    .json(new ApiResponse(httpStatus.OK, result, 'Room deleted successfully'));
+});
+
 export const RoomController = {
   createRoom,
   fetchAllRooms,
   fetchSingleRoom,
   updateRoom,
+  deleteRoom,
 };

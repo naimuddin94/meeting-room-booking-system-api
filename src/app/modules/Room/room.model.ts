@@ -44,6 +44,22 @@ const roomSchema = new Schema<IRoom, IRoomModel>(
   },
 );
 
+// Query Middleware
+roomSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+roomSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+roomSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
 const Room = model<IRoom, IRoomModel>('Room', roomSchema);
 
 export default Room;
