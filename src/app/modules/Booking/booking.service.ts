@@ -6,6 +6,7 @@ import Slot from '../Slot/slot.model';
 import { IBooking } from './booking.interface';
 import Booking from './booking.model';
 
+// Function to save booking details into the database
 const saveBookingIntoDB = async (payload: IBooking) => {
   const { date, room, slots } = payload;
 
@@ -19,6 +20,7 @@ const saveBookingIntoDB = async (payload: IBooking) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'You must select one slot');
   }
 
+  // Find slots available on the specified date
   const availableSlotsQueryDate = await Slot.find({ date: new Date(date) });
 
   if (!availableSlotsQueryDate.length) {
@@ -57,6 +59,7 @@ const saveBookingIntoDB = async (payload: IBooking) => {
   try {
     session.startTransaction();
 
+    // Mark the selected slots as booked
     await Slot.updateMany(
       {
         _id: { $in: slots },
@@ -65,6 +68,7 @@ const saveBookingIntoDB = async (payload: IBooking) => {
       { new: true, session },
     );
 
+    // Create the booking in the database
     const newBooking = await Booking.create([payload], { session });
 
     await session.commitTransaction();
@@ -96,6 +100,25 @@ const saveBookingIntoDB = async (payload: IBooking) => {
   }
 };
 
+const fetchAllBookingsFromDB = async () => {
+  const result = await Booking.find().populate([
+    {
+      path: 'room',
+      select: '-status -createdAt -updatedAt',
+    },
+    {
+      path: 'slots',
+      select: '-isDeleted',
+    },
+    {
+      path: 'user',
+      select: '-status -createdAt -updatedAt -refreshToken -isDeleted',
+    },
+  ]);
+  return result;
+};
+
 export const BookingService = {
   saveBookingIntoDB,
+  fetchAllBookingsFromDB,
 };
