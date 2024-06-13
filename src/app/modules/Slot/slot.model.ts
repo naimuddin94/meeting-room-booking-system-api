@@ -34,6 +34,22 @@ const slotSchema = new Schema<ISlot>(
   },
 );
 
+// Query middleware
+slotSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+slotSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+slotSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
 const Slot = model<ISlot>('Slot', slotSchema);
 
 export default Slot;
