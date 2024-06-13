@@ -9,7 +9,7 @@ const saveSlotIntoDB = async (payload: ISlot) => {
   const isExistsRoom = await Room.findById(payload.room);
 
   if (!isExistsRoom) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Provide valid room id');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Room not found');
   }
 
   const startMinutes = timeToMinutes(payload.startTime);

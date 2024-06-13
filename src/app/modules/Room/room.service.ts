@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { omitField } from '../../lib/omitField';
 import { ApiError } from '../../utils';
+import Slot from '../Slot/slot.model';
 import { roomSearchableFields } from './room.constant';
 import { IRoom } from './room.interface';
 import Room from './room.model';
@@ -134,13 +135,33 @@ const updateRoomIntoDB = async (id: string, payload: Partial<IRoom>) => {
 };
 
 const deleteRoomFromDB = async (id: string) => {
-  const result = await Room.findByIdAndUpdate(
-    id,
-    { isDeleted: true },
-    { new: true },
-  );
+  // const roomSlots = await Slot.find({ room: id });
 
-  return result;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    await Slot.updateMany({ room: id }, { isDeleted: true }, { session });
+
+    const result = await Room.findByIdAndUpdate(
+      id,
+      { isDeleted: true },
+      { new: true, session },
+    );
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Something went wrong during deleting room',
+    );
+  }
 };
 
 export const RoomService = {
