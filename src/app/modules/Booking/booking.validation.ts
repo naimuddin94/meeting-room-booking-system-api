@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import { z } from 'zod';
+import { confirmedStatus } from './booking.constant';
 
 const bookingValidationSchema = z.object({
   date: z.preprocess(
@@ -35,7 +36,8 @@ const bookingValidationSchema = z.object({
     return arg;
   }, z.instanceof(Types.ObjectId)),
   totalAmount: z.number().optional(),
-  isConfirmed: z.boolean().optional(),
+  isConfirmed: z.enum([...confirmedStatus] as [string]).optional(),
+  isDeleted: z.boolean().optional(),
 });
 
 const createBookingValidationSchema = z.object({
