@@ -40,6 +40,22 @@ const bookingSchema = new Schema<IBooking, IBookingModel>(
   { versionKey: false },
 );
 
+// Query middleware
+bookingSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+bookingSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+bookingSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
 const Booking = model<IBooking, IBookingModel>('Booking', bookingSchema);
 
 export default Booking;
