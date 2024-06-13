@@ -30,7 +30,6 @@ const slotSchema = new Schema<ISlot>(
     },
   },
   {
-    timestamps: true,
     versionKey: false,
   },
 );
