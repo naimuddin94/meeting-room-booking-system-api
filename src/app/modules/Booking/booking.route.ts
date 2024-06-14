@@ -12,6 +12,7 @@ router
 
 router
   .route('/:id')
-  .put(auth(USER_ROLE.admin), BookingController.updateBookingStatus);
+  .put(auth(USER_ROLE.admin), BookingController.updateBookingStatus)
+  .delete(auth(USER_ROLE.admin), BookingController.deleteBooking);
 
 export const bookingRouter = router;

@@ -55,9 +55,21 @@ const updateBookingStatus = asyncHandler(async (req, res) => {
     );
 });
 
+const deleteBooking = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const result = await BookingService.deleteBookingFromDB(id);
+
+  res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, result, 'Booking deleted successfully'),
+    );
+});
+
 export const BookingController = {
   createBooking,
   fetchAllBookings,
   fetchAllOwenBookings,
   updateBookingStatus,
+  deleteBooking,
 };
