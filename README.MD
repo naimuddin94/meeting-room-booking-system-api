@@ -2,6 +2,10 @@
 
 The Co-Working Space Management Application streamlines the administration and booking of co-working spaces. Administrators can manage room details and time slots efficiently, ensuring up-to-date inventory. Users enjoy a seamless booking experience with real-time availability updates and automatic cost calculations, making the process smooth and conflict-free. This application enhances efficiency and satisfaction for both administrators and users.
 
+## Live Api
+
+[![Live API](https://img.shields.io/badge/API-Live-brightgreen?style=for-the-badge)](https://room-booking-api-mocha.vercel.app)
+
 ## Features
 
 - User authentication - (Create, Login, Logout)
@@ -61,3 +65,7 @@ Build project
 ## 🔗 Documentation
 
 [![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)](https://documenter.getpostman.com/view/34122341/2sA3XQh2Rt)
+
+## Database Diagram
+
+![Diagram](https://res.cloudinary.com/dxoncladp/image/upload/v1718436659/Untitled_ej3xcc.png)
