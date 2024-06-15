@@ -9,6 +9,14 @@ import { IRoom } from './room.interface';
 import Room from './room.model';
 
 const saveRoomIntoDB = async (payload: IRoom) => {
+  const isExistsRoomNo = await Room.findOne({
+    roomNo: Number(payload.roomNo),
+    floorNo: Number(payload.floorNo),
+  });
+
+  if (isExistsRoomNo) {
+    throw new ApiError(httpStatus.CONFLICT, 'This room already exists');
+  }
   const result = await Room.create(payload);
 
   return result;
