@@ -7,6 +7,9 @@ const router = Router();
 
 router
   .route('/')
-  .get(auth(USER_ROLE.user), BookingController.fetchAllOwenBookings);
+  .get(
+    auth(USER_ROLE.user, USER_ROLE.admin),
+    BookingController.fetchAllOwenBookings,
+  );
 
 export const userBookingRouter = router;
