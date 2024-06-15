@@ -7,7 +7,7 @@ import Slot from './slot.model';
 import { minutesToTime, timeToMinutes } from './slot.util';
 
 const saveSlotIntoDB = async (payload: ISlot) => {
-  const isExistsRoom = await Room.findById(payload.room);
+  const isExistsRoom = await Room.findOne({ _id: payload.room });
 
   if (!isExistsRoom) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Room not found');
