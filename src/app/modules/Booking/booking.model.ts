@@ -37,7 +37,7 @@ const bookingSchema = new Schema<IBooking, IBookingModel>(
       default: false,
     },
   },
-  { versionKey: false },
+  { timestamps: true, versionKey: false },
 );
 
 // Query middleware

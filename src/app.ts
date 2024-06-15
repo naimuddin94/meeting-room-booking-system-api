@@ -33,9 +33,13 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api', router);
 
 // Not-Found routes error handler
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
-  const error = new Error(`can't find ${req.originalUrl} on the server`);
-  next(error);
+  res.status(404).json({
+    success: false,
+    statusCode: 404,
+    message: 'Not Found',
+  });
 });
 
 // Global error handler
