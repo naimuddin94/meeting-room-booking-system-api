@@ -20,6 +20,7 @@ router
   .route('/:id')
   .get(RoomController.fetchSingleRoom)
   .put(
+    auth(USER_ROLE.admin),
     validateRequest(RoomValidation.updateRoomValidationSchema),
     RoomController.updateRoom,
   )
