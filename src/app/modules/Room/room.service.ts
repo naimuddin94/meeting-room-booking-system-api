@@ -9,13 +9,19 @@ import { IRoom } from './room.interface';
 import Room from './room.model';
 
 const saveRoomIntoDB = async (payload: IRoom) => {
+  const isExistsRoomName = await Room.findOne({ name: payload.name });
+
+  if (isExistsRoomName) {
+    throw new ApiError(httpStatus.CONFLICT, 'This room name already exists');
+  }
+
   const isExistsRoomNo = await Room.findOne({
     roomNo: Number(payload.roomNo),
     floorNo: Number(payload.floorNo),
   });
 
   if (isExistsRoomNo) {
-    throw new ApiError(httpStatus.CONFLICT, 'This room already exists');
+    throw new ApiError(httpStatus.CONFLICT, 'This room number already exists');
   }
   const result = await Room.create(payload);
 
@@ -55,11 +61,23 @@ const fetchSingleRoomFromDB = async (id: string) => {
 const updateRoomIntoDB = async (id: string, payload: Partial<IRoom>) => {
   const { amenities, ...remainUpdateData } = payload;
 
+  const isRoomExists = await Room.findById(id);
+  if (!isRoomExists) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Room not found');
+  }
+
   if (remainUpdateData.name || remainUpdateData.roomNo) {
-    const isExistsRoomNo = await Room.findOne({
+    const query = {
       _id: { $ne: id },
       roomNo: remainUpdateData.roomNo,
-    });
+      floorNo: isRoomExists.floorNo,
+    };
+
+    if (remainUpdateData?.floorNo) {
+      query.floorNo = remainUpdateData.floorNo;
+    }
+    
+    const isExistsRoomNo = await Room.findOne(query);
 
     if (isExistsRoomNo) {
       throw new ApiError(
