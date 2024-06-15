@@ -4,16 +4,26 @@ import mongoose from 'mongoose';
 import { ApiError } from '../../utils';
 import Room from '../Room/room.model';
 import Slot from '../Slot/slot.model';
+import User from '../User/user.model';
 import { IBooking } from './booking.interface';
 import Booking from './booking.model';
 
 const saveBookingIntoDB = async (payload: IBooking) => {
-  const { date, room, slots } = payload;
+  const { date, room, slots, user } = payload;
 
-  const isRoomExist = await Room.findById(room);
+  const isRoomExist = await Room.findOne({ _id: room });
 
   if (!isRoomExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Room not found');
+  }
+
+  const isUserExist = await User.findOne({
+    _id: user,
+    status: { $ne: 'blocked' },
+  });
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   if (!slots.length) {
@@ -37,7 +47,8 @@ const saveBookingIntoDB = async (payload: IBooking) => {
     (slot: any) =>
       slots.includes(slot._id.toString()) &&
       slot.date.toISOString().split('T')[0] === targetDate &&
-      !slot.isBooked,
+      !slot.isBooked &&
+      !slot.isDeleted,
   );
 
   allSlots.forEach((slot: any) => {
@@ -148,6 +159,11 @@ const updateBookingStatusIntoDB = async (
   id: string,
   payload: Pick<IBooking, 'isConfirmed'>,
 ) => {
+  const isExistBooking = await Booking.findOne({ _id: id });
+
+  if (!isExistBooking) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Booking not found');
+  }
   const { isConfirmed } = payload;
   const result = await Booking.findByIdAndUpdate(
     id,
