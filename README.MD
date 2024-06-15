@@ -1,8 +1,6 @@
-
 # 🔗 Meeting Room Booking System Application
 
-A backend application with typescript, express, mongoose and zod for co-working spaces booking system.
-
+The Co-Working Space Management Application streamlines the administration and booking of co-working spaces. Administrators can manage room details and time slots efficiently, ensuring up-to-date inventory. Users enjoy a seamless booking experience with real-time availability updates and automatic cost calculations, making the process smooth and conflict-free. This application enhances efficiency and satisfaction for both administrators and users.
 
 ## Features
 
@@ -27,6 +25,7 @@ A backend application with typescript, express, mongoose and zod for co-working 
 - Cost Calculation: The system automatically calculates the total amount based on the number of slots selected and the price per slot.
 
 - Real-Time Availability: Users receive real-time feedback on the availability of rooms and slots, ensuring smooth booking experiences without conflicts.
+
 ## Run Locally
 
 Clone the project
@@ -59,7 +58,6 @@ Build project
   npm run build
 ```
 
-
 ## 🔗 Documentation
-[![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)](https://documenter.getpostman.com/view/34122341/2sA3XQh2Rt)
 
+[![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)](https://documenter.getpostman.com/view/34122341/2sA3XQh2Rt)
