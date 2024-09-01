@@ -3,8 +3,7 @@ import { ApiResponse, asyncHandler, options } from '../../utils';
 import { UserService } from './user.service';
 
 const createUser = asyncHandler(async (req, res) => {
-  const userData = req.body;
-  const result = await UserService.saveUserIntoDB(userData);
+  const result = await UserService.saveUserIntoDB(req);
 
   res
     .status(201)

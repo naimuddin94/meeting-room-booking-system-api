@@ -1,21 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
+import { Request } from 'express';
 import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import { omitField } from '../../lib/omitField';
 import { ApiError } from '../../utils';
-import { ILoginPayload, IUser } from './user.interface';
+import { ILoginPayload } from './user.interface';
 import User from './user.model';
+import { fileUploadOnCloudinary } from '../../utils/fileUploadOnCloudinary';
 
-const saveUserIntoDB = async (payload: IUser) => {
-  const isUserExists = await User.isUserExists(payload.email);
+const saveUserIntoDB = async (req: Request) => {
+  const userData = req.body;
+
+  const isUserExists = await User.isUserExists(userData.email);
 
   if (isUserExists) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already exists!');
   }
 
-  const result = await User.create(payload);
+  if (req.file && req.file.buffer) {
+    userData.image = await fileUploadOnCloudinary(req.file.buffer);
+  }
+
+  const result = await User.create(userData);
 
   if (!result) {
     throw new ApiError(

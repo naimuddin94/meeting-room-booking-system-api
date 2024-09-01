@@ -6,6 +6,7 @@ import { UserValidation } from './user.validation';
 export interface IUser
   extends z.infer<typeof UserValidation.userValidationSchema> {
   passwordChangedAt: Date;
+  image: string;
   isDeleted: boolean;
   status: 'active' | 'blocked';
   refreshToken: string;

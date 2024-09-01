@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
 import config from '../config';
+import { Buffer } from 'buffer';
+
 
 cloudinary.config({
   cloud_name: config.cloudinary_cloud_name,
@@ -7,7 +9,7 @@ cloudinary.config({
   api_secret: config.cloudinary_api_secret,
 });
 
-export const fileUploadOnCloudinary = async (fileBuffer: File) => {
+export const fileUploadOnCloudinary = async (fileBuffer: Buffer) => {
   try {
     // Use a Promise to handle the upload process
     return new Promise((resolve, reject) => {
