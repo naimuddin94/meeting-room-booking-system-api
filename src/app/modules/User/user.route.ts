@@ -17,12 +17,12 @@ router
   );
 
 router
-  .route('/login')
+  .route('/signin')
   .post(
     validateRequest(UserValidation.loginUserValidationSchema),
     UserController.login,
   );
 
-router.route('/logout').post(UserController.logout);
+router.route('/signout').post(UserController.logout);
 
 export const userRouter = router;

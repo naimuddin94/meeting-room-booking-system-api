@@ -20,15 +20,17 @@ const userValidationSchema = z.object({
     })
     .min(4, { message: 'Password must be at least 4 characters' })
     .max(20, { message: 'Password no longer that 20 characters' }),
-  phone: z.string({
-    required_error: 'Phone number is required',
-  }),
-  address: z.string({
-    required_error: 'Address is required',
-  }),
-  role: z.enum([...role] as [string], {
-    message: 'Role is required in valid format user or admin',
-  }),
+  phone: z
+    .string({
+      message: 'Phone number must be string',
+    })
+    .optional(),
+  address: z.string({ message: 'Address must be string' }).optional(),
+  role: z
+    .enum([...role] as [string], {
+      message: 'Role is required in valid format user or admin',
+    })
+    .default('user'),
 });
 
 const loginUserValidationSchema = z.object({

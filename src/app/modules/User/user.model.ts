@@ -27,11 +27,11 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
     },
     phone: {
       type: String,
-      required: true,
+      required: false,
     },
     address: {
       type: String,
-      required: true,
+      required: false,
     },
     role: {
       type: String,
