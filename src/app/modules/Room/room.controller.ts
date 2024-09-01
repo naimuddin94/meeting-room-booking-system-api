@@ -3,7 +3,7 @@ import { ApiResponse, asyncHandler } from '../../utils';
 import { RoomService } from './room.service';
 
 const createRoom = asyncHandler(async (req, res) => {
-  const result = await RoomService.saveRoomIntoDB(req.body);
+  const result = await RoomService.saveRoomIntoDB(req);
 
   res
     .status(httpStatus.CREATED)

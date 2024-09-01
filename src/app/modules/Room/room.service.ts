@@ -1,14 +1,17 @@
+import { Request } from 'express';
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { omitField } from '../../lib/omitField';
 import { ApiError } from '../../utils';
+import { fileUploadOnCloudinary } from '../../utils/fileUploadOnCloudinary';
 import Slot from '../Slot/slot.model';
 import { roomSearchableFields } from './room.constant';
 import { IRoom } from './room.interface';
 import Room from './room.model';
 
-const saveRoomIntoDB = async (payload: IRoom) => {
+const saveRoomIntoDB = async (req: Request) => {
+  const payload = req.body;
   const isExistsRoomName = await Room.findOne({ name: payload.name });
 
   if (isExistsRoomName) {
@@ -23,6 +26,11 @@ const saveRoomIntoDB = async (payload: IRoom) => {
   if (isExistsRoomNo) {
     throw new ApiError(httpStatus.CONFLICT, 'This room number already exists');
   }
+
+  if (req.file && req.file.buffer) {
+    payload.image = await fileUploadOnCloudinary(req.file.buffer);
+  }
+
   const result = await Room.create(payload);
 
   return result;
@@ -76,7 +84,7 @@ const updateRoomIntoDB = async (id: string, payload: Partial<IRoom>) => {
     if (remainUpdateData?.floorNo) {
       query.floorNo = remainUpdateData.floorNo;
     }
-    
+
     const isExistsRoomNo = await Room.findOne(query);
 
     if (isExistsRoomNo) {

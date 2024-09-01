@@ -12,6 +12,10 @@ const roomSchema = new Schema<IRoom, IRoomModel>(
       type: Number,
       required: true,
     },
+    image: {
+      type: String,
+      required: true,
+    },
     floorNo: {
       type: Number,
       required: true,
