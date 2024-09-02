@@ -8,22 +8,30 @@ const roomValidationSchema = z.object({
     })
     .min(3, { message: 'Room name must be at least 3 characters' })
     .max(30, { message: 'Room name no longer than 30 characters' }),
-  roomNo: z.number({
-    required_error: 'Room number is required',
-    invalid_type_error: 'Room number must be valid number',
-  }),
-  floorNo: z.number({
-    required_error: 'Floor number is required',
-    invalid_type_error: 'Floor number must be valid number',
-  }),
-  capacity: z.number({
-    required_error: 'Capacity is required',
-    invalid_type_error: 'Capacity must be valid number',
-  }),
-  pricePerSlot: z.number({
-    required_error: 'Price is required',
-    invalid_type_error: 'Price must be valid number',
-  }),
+  roomNo: z.preprocess((arg: unknown) => {
+    if (typeof arg === 'string') {
+      return Number(arg);
+    }
+    return arg;
+  }, z.number()),
+  floorNo: z.preprocess((arg: unknown) => {
+    if (typeof arg === 'string') {
+      return Number(arg);
+    }
+    return arg;
+  }, z.number()),
+  capacity: z.preprocess((arg: unknown) => {
+    if (typeof arg === 'string') {
+      return Number(arg);
+    }
+    return arg;
+  }, z.number()),
+  pricePerSlot: z.preprocess((arg: unknown) => {
+    if (typeof arg === 'string') {
+      return Number(arg);
+    }
+    return arg;
+  }, z.number()),
   amenities: z.array(z.string()),
 });
 

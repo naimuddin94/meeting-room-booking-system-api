@@ -2,7 +2,6 @@ import { Request } from 'express';
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
-import { omitField } from '../../lib/omitField';
 import { ApiError } from '../../utils';
 import { fileUploadOnCloudinary } from '../../utils/fileUploadOnCloudinary';
 import Slot from '../Slot/slot.model';
@@ -45,13 +44,12 @@ const fetchAllRoomsFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await roomQuery.queryModel;
+  const meta = await roomQuery.countTotal();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const response = result.map((room: any) => {
-    return omitField(room.toObject(), ['status', 'createdAt', 'updatedAt']);
-  });
-
-  return response;
+  return {
+    meta,
+    result,
+  };
 };
 
 const fetchSingleRoomFromDB = async (id: string) => {

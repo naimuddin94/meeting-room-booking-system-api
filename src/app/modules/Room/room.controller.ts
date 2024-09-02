@@ -15,15 +15,11 @@ const createRoom = asyncHandler(async (req, res) => {
 const fetchAllRooms = asyncHandler(async (req, res) => {
   const result = await RoomService.fetchAllRoomsFromDB(req.query);
 
-  let message = 'Rooms retrieved successfully';
-  let statusCode = 200;
-
-  if (!result.length) {
-    message = 'No Data Found';
-    statusCode = 404;
-  }
-
-  res.status(statusCode).json(new ApiResponse(statusCode, result, message));
+  res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, result, 'Rooms retrieved successfully'),
+    );
 });
 
 const fetchSingleRoom = asyncHandler(async (req, res) => {

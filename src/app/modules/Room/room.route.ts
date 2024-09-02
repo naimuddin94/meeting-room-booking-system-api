@@ -15,7 +15,7 @@ router
   .post(
     auth(USER_ROLE.admin),
     upload.single('image'),
-    // validateRequest(RoomValidation.createRoomValidationSchema),
+    validateRequest(RoomValidation.createRoomValidationSchema),
     RoomController.createRoom,
   )
   .get(RoomController.fetchAllRooms);
