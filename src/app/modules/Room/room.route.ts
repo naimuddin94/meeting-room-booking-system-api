@@ -25,7 +25,7 @@ router
   .get(RoomController.fetchSingleRoom)
   .put(
     auth(USER_ROLE.admin),
-    validateRequest(RoomValidation.updateRoomValidationSchema),
+    // validateRequest(RoomValidation.updateRoomValidationSchema),
     RoomController.updateRoom,
   )
   .delete(auth(USER_ROLE.admin), RoomController.deleteRoom);
