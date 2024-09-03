@@ -32,6 +32,10 @@ const bookingSchema = new Schema<IBooking, IBookingModel>(
       enum: confirmedStatus,
       default: 'unconfirmed',
     },
+    paymentInfo: {
+      type: String,
+      required: true,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
