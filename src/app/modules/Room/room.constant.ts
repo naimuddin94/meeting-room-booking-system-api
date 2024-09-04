@@ -3,4 +3,4 @@ export const ROOM_STATUS = {
   unavailable: 'unavailable',
 } as const;
 
-export const roomSearchableFields = ['name'];
+export const roomSearchableFields = ['name', 'amenities'];
