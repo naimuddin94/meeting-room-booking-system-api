@@ -17,31 +17,26 @@ const createBooking = asyncHandler(async (req, res) => {
 });
 
 const fetchAllBookings = asyncHandler(async (req, res) => {
-  const result = await BookingService.fetchAllBookingsFromDB();
+  const result = await BookingService.fetchAllBookingsFromDB(req.query);
 
-  let message = 'All bookings retrieved successfully';
-  let statusCode = 200;
-
-  if (!result.length) {
-    message = 'No Data Found';
-    statusCode = 404;
-  }
-
-  res.status(statusCode).json(new ApiResponse(statusCode, result, message));
+  res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, result, 'Booking retrieved successfully'),
+    );
 });
 
 const fetchAllOwenBookings = asyncHandler(async (req, res) => {
-  const result = await BookingService.fetchAllOwenBookingsFromDB(req.user.id);
+  const result = await BookingService.fetchAllOwenBookingsFromDB(
+    req.user.id,
+    req.query,
+  );
 
-  let message = 'User bookings retrieved successfully';
-  let statusCode = 200;
-
-  if (!result.length) {
-    message = 'No Data Found';
-    statusCode = 404;
-  }
-
-  res.status(statusCode).json(new ApiResponse(statusCode, result, message));
+  res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, result, 'Booking retrieved successfully'),
+    );
 });
 
 const updateBookingStatus = asyncHandler(async (req, res) => {

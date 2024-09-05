@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
+import QueryBuilder from '../../builder/QueryBuilder';
 import { ApiError } from '../../utils';
 import Room from '../Room/room.model';
 import Slot from '../Slot/slot.model';
@@ -119,40 +120,73 @@ const saveBookingIntoDB = async (payload: IBooking) => {
   }
 };
 
-const fetchAllBookingsFromDB = async () => {
-  const result = await Booking.find().populate([
-    {
-      path: 'room',
-      select: '-status -createdAt -updatedAt',
-    },
-    {
-      path: 'slots',
-      select: '-isDeleted',
-    },
-    {
-      path: 'user',
-      select: '-status -createdAt -updatedAt -refreshToken -isDeleted',
-    },
-  ]);
-  return result;
+const fetchAllBookingsFromDB = async (query: Record<string, unknown>) => {
+  const bookingQuery = new QueryBuilder(
+    Booking.find().populate([
+      {
+        path: 'room',
+        select: '-status -createdAt -updatedAt',
+      },
+      {
+        path: 'slots',
+        select: '-isDeleted',
+      },
+      {
+        path: 'user',
+        select: '-status -createdAt -updatedAt -refreshToken -isDeleted',
+      },
+    ]),
+    query,
+  )
+    .search(['paymentInfo', 'isConfirmed', 'totalAmount'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await bookingQuery.queryModel;
+  const meta = await bookingQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
-const fetchAllOwenBookingsFromDB = async (id: string) => {
-  const result = await Booking.find({ user: id }).populate([
-    {
-      path: 'room',
-      select: '-status -createdAt -updatedAt',
-    },
-    {
-      path: 'slots',
-      select: '-isDeleted',
-    },
-    {
-      path: 'user',
-      select: '-status -createdAt -updatedAt -refreshToken -isDeleted',
-    },
-  ]);
-  return result;
+const fetchAllOwenBookingsFromDB = async (
+  id: string,
+  query: Record<string, unknown>,
+) => {
+  const bookingQuery = new QueryBuilder(
+    Booking.find({ user: id }).populate([
+      {
+        path: 'room',
+        select: '-status -createdAt -updatedAt',
+      },
+      {
+        path: 'slots',
+        select: '-isDeleted',
+      },
+      {
+        path: 'user',
+        select: '-status -createdAt -updatedAt -refreshToken -isDeleted',
+      },
+    ]),
+    query,
+  )
+    .search(['paymentInfo', 'isConfirmed', 'totalAmount'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await bookingQuery.queryModel;
+  const meta = await bookingQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const updateBookingStatusIntoDB = async (
